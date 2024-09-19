@@ -31,7 +31,7 @@
     <link rel="icon" href="../assets/img/f2.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/assets/img/f2.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="../assets/css/estilos.css?">
+    <link rel="stylesheet" href="../assets/css/estilos.css">
   </head>
   <header>
         <nav class="navbar navbar-expand-lg nav class="navbar bg-dark border-bottom border-body data-bs-theme="dark">
@@ -143,59 +143,41 @@
 
 <main><br><br>
 	
-	<div class="container">
-		
-   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-    <?php foreach ($resultado as $row) { 
-     
-      ?> 
-      <div class="col">
-        <div class="card shadow-sm">
-         <?php 
-     
-         $image = $row["img"] ; 
-        
-     
-        
+<div class="container">
+    <?php if (empty($resultado)): ?>
+        <p>No hay productos disponibles.</p>
+    <?php else: ?>
+        <?php foreach ($resultado as $row): 
+            $image = $row["img"];
         ?>
-        <div class="imagen">
-          <img src="data:image/jpeg;base64, <?php echo base64_encode($image) ?> " alt="">
-        </div>
-        
+            <main class="main-container">
+                <section class="product-container">
+                    <article class="article">
+                        <div class="img-card">
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($image); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>" class="img-aside">
+                        </div>
+                        <h5 class="text-article"><?php echo htmlspecialchars($row["nombre"]); ?></h5>
+                        <p class="text-article-paragraph"><?php echo number_format($row["precio"], 3, ',', '.'); ?></p>
+                        <h5 class="text-article-paragraph">
+                            <small class="text-success"><?php echo htmlspecialchars($row["descuento"]); ?>% descuento</small>
+                        </h5> 
 
-        <div class="card-body">
-         <h5 class="card-title"><?php echo $row["nombre"]; ?></h5>
-         <div class="btn-group">
-           <p class="card-text"><?php echo number_format($row["precio"],3,',','.'); ?></p> 
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="detalles.php?id=<?php echo $row["id"]; ?>&token=<?php echo hash_hmac("sha1", $row["id"], KEY_TOKEN); ?>" class="btn btn-primary">Detalles</a>
+                            </div>
+                            <div class="btn-group">
+                                <a onclick="agrega_producto(<?php echo $row['id']; ?>, '<?php echo hash_hmac('sha1', $row['id'], KEY_TOKEN); ?>')" class="btn btn-success">Agregar</a>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+            </main>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
 
-         </div> 
-         <div class="btn-group">
-           <h5 class="card-text" id="card-text" ><small class="text-success" ><?php echo $row["descuento"]; ?>% descuento</small></h5> 
-           
-         </div> <br><br>
-         
-         <div class="d-flex justify-content-between align-items-center">
-          <div class="btn-group">
-            
-            <a href="detalles.php?id=<?php echo $row["id"];?>&token=<?php echo hash_hmac("sha1",$row["id"],KEY_TOKEN);?>" 
-            class="btn btn-primary">Detalles</a>
-            
-          </div>
-          <div class="btn-group">
-           
-            <a onclick="agrega_producto(<?php echo $row['id']; ?> , 
-            '<?php echo  hash_hmac('sha1', $row['id'],KEY_TOKEN);?>' )" class="btn btn-success">
-            Agregar</a>
-          </div>
-          
-        </div>
-      </div>
-    </div>
-  </div>
-  <?php 
-} 
 
-?>
 <script>  
   function agrega_producto(id , token){
 
