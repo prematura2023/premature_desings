@@ -1,13 +1,36 @@
 <?php 
 
 require '../config/config.php';
-require '../config/Database.php';
-require '../clases/clientesFuncione.php';
+require '../config/database.php';
 
 // llamamos a la clase database de nuestra base de datos para luego conectarnos
 $db = new Database();
-$con = $db->conectar();
+ $con = $db->conectar();
 // creamos una variable error como un arreglo para almacenar los errores
+
+if(isset($_GET["login"])){
+    
+    if($con){
+
+    
+    $usuario = $_GET['usuario'];
+    $contraseña = $_GET['password'];
+
+    $consulta = "SELECT * FROM clientes WHERE usuario = '$usuario' AND password = '$contraseña'";
+    $resultado = $con->query($consulta);
+
+        if($resultado === false){
+            echo "Error ". $con->error;
+        }
+
+        
+
+    }else{
+        echo "no conecta";
+    }
+}
+
+
 
 ?>
 <!DOCTYPE html>
@@ -22,20 +45,20 @@ $con = $db->conectar();
     <title>Inicio de sesión</title>
 </head>
 <body>
-    <form action="login.php" method="POST">
+    <form action="" method="GET">
         <h1>Iniciar sesión</h1>
         <a href="politica-de-privacidad.php">Política de privacidad</a>
         <a href="terminos-y-condiciones.php">Términos y condiciones</a>
         <hr>
         <i class="fa-solid fa-user"></i>
         <label for="nombre">Usuario</label>
-        <input type="text" name="nombre" id="nombre" placeholder="Nombre de usuario" required>
+        <input type="text" name="usuario" id="nombre" placeholder="Usuario" required>
 
         <i class="fa-solid fa-unlock"></i>
         <label for="password">Contraseña</label>
         <input name="password" type="password" id="password" placeholder="Contraseña" required>
         <hr>
-        <button type="submit">Iniciar sesión</button>
+        <button type="submit" name="login">Iniciar sesión</button>
         <a href="registro.php" class="btn btn-success">Crear cuenta</a><br><br>
     </form>
 </body>
